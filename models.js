@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
- const db = new Sequelize('postgres://localhost:5432/plantr')
+const db = new Sequelize('postgres://localhost:5432/plantr');
 
-module.exports = db;
+module.exports = { db };
 
 
-const Gardener   = db.define('gardener', {
+const Gardener = db.define('gardener', {
   name: {
     type: Sequelize.STRING
   },
@@ -13,20 +13,29 @@ const Gardener   = db.define('gardener', {
   }
 });
 
-const Plot = db.define('plot',{
-  size:{ type: Sequelize.INTEGER},
+const Plot = db.define('plot', {
+  size: {
+    type: Sequelize.INTEGER
+  },
+  shaded: {
+    type: Sequelize.BOOLEAN
+  }
+});
 
-  shaded: { type: Sequelize.BOOLEAN}
-})
+const Vegetable = db.define('vegetable', {
+  name:  {
+    type: Sequelize.STRING
+  },
+  color: {
+    type: Sequelize.STRING
+  },
+  planted_on: {
+    type: Sequelize.DATE
+  }
+});
 
-const Vegetable = db.define('vegetable',{
-  name:  {type: Sequelize.STRING},
-
-  color: {type: Sequelize.STRING},
-planted_on: {type: Sequelize.DATE}
-})
-Plot.belongsTo(Gardener)
-Vegetable.belongsToMany(Plot, {through: 'vegetable_plot'})
-Plot.belongsToMany(Vegetable, {through: 'vegetable_plot'})
-Gardener.belongsTo(Vegetable,{as: 'favorite_vegetable'})
+Plot.belongsTo(Gardener);
+Vegetable.belongsToMany(Plot, {through: 'vegetable_plot'});
+Plot.belongsToMany(Vegetable, {through: 'vegetable_plot'});
+Gardener.belongsTo(Vegetable, {as: 'favorite_vegetable'});
 
